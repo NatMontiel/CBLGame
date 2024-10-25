@@ -24,14 +24,12 @@ public class KeyboardListener implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         if (GameStates.gameState == EDITING) {
-            game.getEditing().keyPressed(e);;
+            game.getEditing().keyPressed(e);
         } else if (GameStates.gameState == PLAYING) {
             game.getPlaying().keyPressed(e);
         }
@@ -39,8 +37,5 @@ public class KeyboardListener implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        // TODO Auto-generated method stub
-        
     }
-
 }

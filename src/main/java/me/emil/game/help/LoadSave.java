@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
 import me.emil.game.objects.PathPoint;
@@ -16,6 +17,8 @@ import me.emil.game.objects.PathPoint;
  * 
  */
 public class LoadSave {
+    
+    public static String DIRECTORY = System.getProperty("user.dir") + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "CBLGame";
 
     /** Sets the image to use for the graphics.
      * 
@@ -34,43 +37,22 @@ public class LoadSave {
 
         return img;
     }
-
-
-    /** Creates the level's text file.
-     * 
-     */
-    public static void createFile() {
-
-        File txtFile = new File("/testTextFile.txt");
-
-        try {
-            txtFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+    
     /** Saves a level in the text file.
      * 
      */
-    private static void writeToFile(File f, int[] idArr, PathPoint start, PathPoint end) {
-
-        try {
-            PrintWriter pw = new PrintWriter(f); 
-            for (Integer i : idArr) {
-                pw.println(i);
-            }
-
-            pw.println(start.getxCord());
-            pw.println(start.getyCord());
-            pw.println(end.getxCord());
-            pw.println(end.getyCord());
-
-            pw.close();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    private static void writeToFile(CustomFile f, int[] idArr, PathPoint start, PathPoint end) {
+        List<String> fileContent = new ArrayList<>();
+        
+        for (Integer i : idArr)
+            fileContent.add(String.valueOf(i));
+        
+        fileContent.add(String.valueOf(start.getxCord()));
+        fileContent.add(String.valueOf(start.getyCord()));
+        fileContent.add(String.valueOf(end.getxCord()));
+        fileContent.add(String.valueOf(end.getyCord()));
+        
+        f.setContent(fileContent);
     }
 
     /** Checks if the file of the level exists.
@@ -78,15 +60,12 @@ public class LoadSave {
      * 
      */
     public static void saveLevel(String name, int[][] idArr, PathPoint start, PathPoint end) {
-        File levelFile = new File("/" + name + ".txt");
+        CustomFile levelFile = new CustomFile(DIRECTORY, "/" + name + ".txt");
 
-        if (levelFile.exists()) {
+        if (levelFile.exists())
             writeToFile(levelFile, Util.dimConvert(idArr), start, end);
-
-        } else {
-            System.out.println("File: " + name + " does not exist!");
-            return;
-        }
+        else
+            levelFile.createNewFile();
     }
 
     /** Reads the level file.
@@ -116,14 +95,17 @@ public class LoadSave {
      * 
      */
     public static int[][] getLevelData(String name) {
-
-        File lvlFile = new File("/" + name + ".txt");
+        CustomFile lvlFile = new CustomFile(DIRECTORY, "/" + name + ".txt");
 
         if (lvlFile.exists()) {
             ArrayList<Integer> list = readFromFile(lvlFile);
+            
+            if(list.isEmpty())
+                return null;
+            
             return Util.arrayListTo2Dint(list, 20, 20);
         } else {
-            System.out.println("File: " + name + "does not exist!");
+            lvlFile.createNewFile();
             return null;
         }  
     }
@@ -132,21 +114,25 @@ public class LoadSave {
      * 
      *
      */
-    public static ArrayList<PathPoint> getLevelPathPoints(String name) {
+    public static List<PathPoint> getLevelPathPoints(String name) {
 
-        File lvlFile = new File("/" + name + ".txt");
+        CustomFile lvlFile = new CustomFile(DIRECTORY, "/" + name + ".txt");
 
         if (lvlFile.exists()) {
-            ArrayList<Integer> list = readFromFile(lvlFile);
-            ArrayList<PathPoint> points = new ArrayList<>();
+            List<Integer> list = readFromFile(lvlFile);
+            
+            if(list.isEmpty())
+                return new ArrayList<>();
+            
+            List<PathPoint> points = new ArrayList<>();
 
             points.add(new PathPoint(list.get(400), list.get(401)));
             points.add(new PathPoint(list.get(402), list.get(403)));
 
             return points;
         } else {
-            System.out.println("File: " + name + "does not exist!");
-            return null;
+           lvlFile.createNewFile();
+            return new ArrayList<>();
         } 
     }
 
@@ -155,22 +141,11 @@ public class LoadSave {
      *
      */
     public static void createLevel(String name, int[] idArr) {
-
-        File newLevel = new File("/" + name + ".txt");
-
-        if (newLevel.exists()) {
-            System.out.println("File: " + name + "already exists!");
-            return;
-        } else {
-            try {
-                newLevel.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            writeToFile(newLevel, idArr, new PathPoint(0, 0), new PathPoint(0, 0));
+        CustomFile newLevel = new CustomFile(DIRECTORY, "/" + name + ".txt");
+        
+        if(!newLevel.exists()) {
+           newLevel.createNewFile();
+           writeToFile(newLevel, idArr, new PathPoint(0, 0), new PathPoint(0, 0));
         }
     }
-
-    
 }

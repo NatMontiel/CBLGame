@@ -16,6 +16,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.List;
+
 import me.emil.game.main.Game;
 import me.emil.game.main.Sound;
 // import me.emil.game.main.GameScreen;
@@ -35,7 +37,7 @@ import me.emil.game.ui.ActionBar;
 */
 public class Playing extends GameScene implements SceneMethods {
 
-    private int[][] lvl;
+    private int[][] lvl = new int[0][0];
 
     private ActionBar actionBar;
     private int mouseX;
@@ -74,9 +76,13 @@ public class Playing extends GameScene implements SceneMethods {
 
     private void loadDefaultLevel() {
         lvl = LoadSave.getLevelData("new_level");
-        ArrayList<PathPoint> points = LoadSave.getLevelPathPoints("new_level");
+        List<PathPoint> points = LoadSave.getLevelPathPoints("new_level");
+        
+        if(points.isEmpty())
+            return;
+        
         start = points.get(0);
-        end = points. get(1);
+        end = points.get(1);
     }
 
     public void setLevel(int[][] lvl) {

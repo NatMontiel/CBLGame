@@ -6,6 +6,8 @@ import me.emil.game.help.LoadSave;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.List;
+
 import me.emil.game.main.Game;
 import me.emil.game.objects.PathPoint;
 import me.emil.game.objects.Tile;
@@ -42,7 +44,11 @@ public class Editing extends GameScene implements SceneMethods {
 
     private void loadDefaultLevel() {
         lvl = LoadSave.getLevelData("new_level");
-        ArrayList<PathPoint> points = LoadSave.getLevelPathPoints("new_level");
+        List<PathPoint> points = LoadSave.getLevelPathPoints("new_level");
+        
+        if(points.isEmpty())
+            return;
+        
         start = points.get(0);
         end = points.get(1);
     }
