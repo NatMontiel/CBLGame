@@ -98,7 +98,7 @@ public class Game extends JFrame implements Runnable {
     }
 
     public static void main(String[] args) {
-        System.out.println("I like women");
+        System.out.println("I like women ");
 
         Sound2.testSound();
 
