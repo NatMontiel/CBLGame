@@ -1,66 +1,56 @@
 package me.emil.game.main;
 
-import me.emil.game.inputs.KeyboardListener;
-import me.emil.game.inputs.MyMouseListener;
+import me.emil.game.input.KeyboardListener;
+import me.emil.game.input.SimpleMouseListener;
+
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import javax.swing.JPanel;
-
 
 /** Sets the properties of the game screen.
 * 
 */
 public class GameScreen extends JPanel {
 
-    private Game game;
-    private Dimension size;
-
-    private MyMouseListener myMouseListener;
-    private KeyboardListener keyboardListener;
-
-
+    private final Game game;
+    
     /** Sets the size of the game screen.
     * 
     */
     public GameScreen(Game game) {
         this.game = game;
-        setPanelSize();
-
     }
     
     /** Sets the me.emil.game.inputs the screen can receive.
      * 
      */
-    public void initInputs() {
-        myMouseListener = new MyMouseListener(game);
-        keyboardListener = new KeyboardListener(game);
+    public void init() {
+        SimpleMouseListener simpleMouseListener = new SimpleMouseListener(game);
+        KeyboardListener keyboardListener = new KeyboardListener(game);
 
-        addMouseListener(myMouseListener);
-        addMouseMotionListener(myMouseListener);
+        addMouseListener(simpleMouseListener);
+        addMouseMotionListener(simpleMouseListener);
         addKeyListener(keyboardListener);
 
         requestFocus();
+        setPanelSize();
     }
 
     private void setPanelSize() {
-        size = new Dimension(640, 800);
+        Dimension size = new Dimension(640, 800);
         setMinimumSize(size);
         setPreferredSize(size);
         setMaximumSize(size);
     }
-
     
-
     /** Sets the graphics of the game.
      * 
      */
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        game.getRender().render(g);
+    public void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
+        
+        if(game.isGameScenePlaying())
+            game.getGameScene().render(graphics);
     }
-
-    
-
-
 }
